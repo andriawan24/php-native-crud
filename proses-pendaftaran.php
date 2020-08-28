@@ -1,5 +1,16 @@
-<?php
-include('config.php');
+<?php 
+include("config.php");
+
+function write_mysql_log($dbe)
+{
+  $remote_addr = $_SERVER["REMOTE_ADDR"];
+  $request_uri = $_SERVER["REQUEST_URI"];
+  $message = "Accessed";
+
+  $sql = "INSERT INTO logs (remote_addr, req_uri, messages) VALUE ('$remote_addr', '$request_uri', '$message')";
+
+  $query = mysqli_query($dbe, $sql);
+}
 
 if(isset($_POST['submit'])) {
     // Ambil data
@@ -12,6 +23,8 @@ if(isset($_POST['submit'])) {
     // Membuat Query
     $sql = "INSERT INTO calon_siswa (nama, alamat, jenis_kelamin, agama, sekolah_asal) VALUE ('$nama', '$alamat', '$jenis_kelamin', '$agama', '$sekolah_asal') ";
     $query = mysqli_query($db, $sql);
+    write_mysql_log($db);
+
 
     if ( $query ) {
         header("Location: index.php?status=sukses");
@@ -21,5 +34,3 @@ if(isset($_POST['submit'])) {
 }else{
     die("akses dilarang..");
 }
-
-?>
